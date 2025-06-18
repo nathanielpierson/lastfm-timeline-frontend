@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import './App.css'
 
-function App() {
-
+export function ArtistsPage() {
   return (
     <div>
       <p>
-        test
+        artistspage
       </p>
     </div>
   )
 }
-
-export default App
