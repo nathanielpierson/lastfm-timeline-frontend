@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export function WeeklyChartPage() {
-  const [artists, setArtists] = useState([]);
+  const [albums, setAlbums] = useState([]);
   const handleIndex = () => {
     axios.get("http://localhost:3000/weekly-chart", {
       params: {
@@ -10,7 +10,7 @@ export function WeeklyChartPage() {
       }
     })
     .then((response) => {
-      setArtists(response.data);
+      setAlbums(response.data);
       console.log(response.data[69]);
     }
   );
@@ -18,9 +18,9 @@ export function WeeklyChartPage() {
 useEffect(handleIndex,[]);
   return (
   <div>
-  {artists.map((artist) => (
-    <div key={artist.id}>
-    <h3>{artist.artist['#text']}</h3>
+  {albums.map((album) => (
+    <div key={album.id}>
+    <h3>{album.name} by {album.artist['#text']}</h3>
     </div>
 
   ))}
