@@ -1,32 +1,38 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css'
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { Header } from './Header'
+import { Footer } from './Footer'
 import { ArtistsPage } from './ArtistsPage'
 import { TopTracksPage } from './TopTracksPage'
 
+const router = createBrowserRouter([
+  {
+    element: (
+        <div>
+          <Header />
+          <Outlet />
+          <br></br>
+          <Footer />
+        </div>
+    ),
+    children: [
+      {
+        path: "/toptracks",
+        element: <TopTracksPage />,
+      },
+      {
+        path: "/artists",
+        element: <ArtistsPage />,
+      },
+    ],
+  },
+]);
+
+
 function App() {
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    axios.get("http://localhost:3000")
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
-
-  return (
-    <div>
-      <p>
-        <ArtistsPage />
-        <TopTracksPage />
-        test
-      </p>
-    </div>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;

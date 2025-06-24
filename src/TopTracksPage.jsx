@@ -21,7 +21,7 @@ useEffect(handleIndex,[]);
     {tracks.map((track) =>
  (
  <div key={track.id}>
-  <h2>#{track.rank}: {track.name}</h2>
+  <h2>#{track.rank}: {track.name} {(track.playcount).toLocaleString()} plays</h2>
   </div>
   ))}
     <p>
