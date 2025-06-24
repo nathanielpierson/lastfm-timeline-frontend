@@ -10,20 +10,20 @@ export function TopTracksPage() {
       }
     })
     .then((response) => {
-      setTracks(response.data);
-      console.log(response.data);
+      setTracks(response.data.toptracks.track);
+      console.log(response.data.toptracks.track);
     }
   );
 };
 useEffect(handleIndex,[]);
  return (
   <div>
-    {/* {tracks.toptracks.map((track) =>
+    {tracks.map((track) =>
  (
  <div key={track.id}>
-  <h2>{track.name}</h2>
+  <h2>#{track.rank}: {track.name}</h2>
   </div>
-  ))} */}
+  ))}
     <p>
       top tracks page
     </p>
