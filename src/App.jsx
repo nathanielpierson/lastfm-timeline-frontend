@@ -6,6 +6,7 @@ import { Header } from './Header'
 import { Footer } from './Footer'
 import { ArtistsPage } from './ArtistsPage'
 import { TopTracksPage } from './TopTracksPage'
+import { WeeklyChartPage } from './WeeklyChartPage';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         path: "/artists",
         element: <ArtistsPage />,
       },
+      {
+        path: "/weeklychart",
+        element: <WeeklyChartPage />
+      }
     ],
   },
 ]);
