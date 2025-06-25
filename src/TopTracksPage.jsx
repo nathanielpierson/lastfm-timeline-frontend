@@ -6,7 +6,7 @@ export function TopTracksPage() {
   const handleIndex = () => {
     axios.get("http://localhost:3000/top-tracks", {
       params: {
-        artist: "Three Days Grace"
+        artist: "Bob Dylan"
       }
     })
     .then((response) => {
