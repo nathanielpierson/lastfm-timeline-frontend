@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <div>
-      footer
+      API provided by Lastfm. Application developed by Nathaniel Pierson ©2025
     </div>
   )
 }
