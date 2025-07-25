@@ -1,12 +1,6 @@
-# React + Vite
+Project using the last.fm API to make a timeline of when a user listened to certain artists in their rankings.
+Measurements available through API are:
+The last week, the last month, the last 3 months, the last 6 months, the last 12 months, forever
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Using this limited data return, I am using this app to find connections to albums being continuously in the top 50/100 for a user and gathering the playcounts from specific periods. Currently has two different versions of the backend, one in Ruby on Rails and the other in Express.js. The goal is to have the program fully functioning on an Express backend and defunct the Rails version as I am using this project to learn the Express framework.
+Express.js backend available [here]((https://github.com/nathanielpierson/lastfm-backend-node-version)): https://github.com/nathanielpierson/lastfm-backend-node-version
