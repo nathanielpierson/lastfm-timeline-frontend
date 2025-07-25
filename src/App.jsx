@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { ArtistsPage } from "./ArtistsPage";
 import { TopTracksPage } from "./TopTracksPage";
 import { WeeklyChartPage } from "./WeeklyChartPage";
+import { BackendChartPage } from "./BackendChartPage";
 import { UserTopAlbumsPage } from "./UserTopAlbumsPage";
 
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         path: "/usertopalbums",
         element: <UserTopAlbumsPage />,
       },
+      {
+        path: "/topbackendalbums",
+        element: <BackendChartPage />,
+      }
     ],
   },
 ]);
