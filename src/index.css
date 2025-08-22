@@ -1,3 +1,14 @@
+@import "tailwindcss";
+
 html {
   font-family: Arial, Helvetica, sans-serif
+}
+
+.filled {
+  background-color: rgb(205, 197, 255);
+  border-width: thin;
+}
+
+.artist {
+  font-weight: 600;
 }

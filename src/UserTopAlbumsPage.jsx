@@ -15,7 +15,7 @@ export function UserTopAlbumsPage() {
         params: {
           user: query,
           period: "6month",
-          limit: 100,
+          limit: 600,
         },
       })
       .then((response) => {
@@ -26,7 +26,7 @@ export function UserTopAlbumsPage() {
         params: {
           user: query,
           period: "12month",
-          limit: 100,
+          limit: 600,
         },
       })
       .then((response) => {
