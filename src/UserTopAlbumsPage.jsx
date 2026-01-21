@@ -8,7 +8,7 @@ export function UserTopAlbumsPage() {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    const query = form[0].value;
+    const query = formData.get("query") || form[0].value;
     console.log(query);
     axios
       .get("http://localhost:3000/top-albums.json", {
@@ -55,10 +55,22 @@ export function UserTopAlbumsPage() {
   console.log(`${same} number of same albums`);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input name="query" />
-        <button type="submit">Search</button>
+    <div className="p-6">
+      <form onSubmit={handleSubmit} className="mb-8 flex flex-col items-center gap-4">
+        <div className="flex w-full max-w-md gap-2">
+          <input 
+            name="query" 
+            type="text"
+            placeholder="Enter Last.fm username..."
+            className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-base shadow-sm transition-all"
+          />
+          <button 
+            type="submit"
+            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Search
+          </button>
+        </div>
       </form>
       {/* <p>{albumsSixMonth[3].artist.name}</p> */}
       {albumsSixMonth.map((album) => (
