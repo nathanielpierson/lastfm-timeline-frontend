@@ -7,6 +7,8 @@ import { TopTracksPage } from "./TopTracksPage";
 import { WeeklyChartPage } from "./WeeklyChartPage";
 import { EditedChartPage } from "./EditedChartPage";
 import { UserTopAlbumsPage } from "./UserTopAlbumsPage";
+import { HomePage } from "./HomePage";
+
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,10 @@ const router = createBrowserRouter([
       </div>
     ),
     children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
       {
         path: "/toptracks",
         element: <TopTracksPage />,
