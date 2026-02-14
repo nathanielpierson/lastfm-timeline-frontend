@@ -1,6 +1,6 @@
-Project using the last.fm API to make a timeline of when a user listened to certain artists in their rankings.
+This project uses the last.fm API to make a timeline of when a user listened to certain albums in their rankings.
 Measurements available through API are:
 The last week, the last month, the last 3 months, the last 6 months, the last 12 months, forever
 
-Using this limited data return, I am using this app to find connections to albums being continuously in the top 50/100 for a user and gathering the playcounts from specific periods. Currently has two different versions of the backend, one in Ruby on Rails and the other in Express.js. The goal is to have the program fully functioning on an Express backend and defunct the Rails version as I am using this project to learn the Express framework.
-Express.js backend available [here]((https://github.com/nathanielpierson/lastfm-backend-node-version)): https://github.com/nathanielpierson/lastfm-backend-node-version
+Using this limited data return, I designed this app to find albums that have play counts for multiple time periods and gathering those playcounts into one place. This project is run with an Express.js backend and a PostgreSQL database. the Express.js backend is available [here]((https://github.com/nathanielpierson/lastfm-backend-node-version)): https://github.com/nathanielpierson/lastfm-backend-node-version
+I am also working on a live version of this project here: https://lastfm-charting-app-frontend.onrender.com
