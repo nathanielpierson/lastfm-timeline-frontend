@@ -25,7 +25,7 @@ export function UserTopAlbumsPage() {
     
     console.log(query);
     axios
-      .get("http://localhost:3000/api/users/usertopalbums", {
+      .get("http://localhost:3000/api/users/localalbumdata", {
         params: {
           user: query,
           period: "6month",
@@ -33,7 +33,8 @@ export function UserTopAlbumsPage() {
         },
       })
       .then((response) => {
-        setAlbumsSixMonth(response.data);
+        const data = response.data?.data ?? response.data;
+        setAlbumsSixMonth(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch((err) => {
@@ -45,7 +46,7 @@ export function UserTopAlbumsPage() {
       });
       
     axios
-      .get("http://localhost:3000/api/users/usertopalbums", {
+      .get("http://localhost:3000/api/users/localalbumdata", {
         params: {
           user: query,
           period: "12month",
@@ -53,8 +54,8 @@ export function UserTopAlbumsPage() {
         },
       })
       .then((response) => {
-        console.log(response.data[3].artist.name);
-        setAlbumsTwelveMonth(response.data);
+        const data = response.data?.data ?? response.data;
+        setAlbumsTwelveMonth(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
         console.error("Error fetching 12 month data:", err);
@@ -111,7 +112,7 @@ export function UserTopAlbumsPage() {
         )}
       </form>
       {/* <p>{albumsSixMonth[3].artist.name}</p> */}
-      {albumsSixMonth.map((album) => (
+      {(Array.isArray(albumsSixMonth) ? albumsSixMonth : []).map((album) => (
         <div key={album.id}>
           {/* <img src={album.image[1]['#text']} /> */}
           <h3>
