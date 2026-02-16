@@ -58,7 +58,7 @@ export function EditedChartPage() {
       {sortedAlbums.map((album) => (
         <div key={album.id} className="flex justify-start columns-1 border-2">
           <h2 className="truncate w-48">{album.title}</h2>
-          <img src={album.image_url} />
+          {album.image_url && <img src={album.image_url} alt="" />}
           <p className="artist">{album.artist.name}</p>
           {album.one_week !== 0 ? (
             <p className="filled">one week: {album.one_week}</p>
