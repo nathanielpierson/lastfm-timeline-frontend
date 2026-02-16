@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export function UserTopAlbumsPage() {
   const [albumsSixMonth, setAlbumsSixMonth] = useState([]);
@@ -23,7 +23,6 @@ export function UserTopAlbumsPage() {
     setAlbumsSixMonth([]);
     setAlbumsTwelveMonth([]);
     
-    console.log(query);
     axios
       .get("http://localhost:3000/api/users/localalbumdata", {
         params: {
@@ -38,7 +37,6 @@ export function UserTopAlbumsPage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching 6 month data:", err);
         setError(err.code === 'ERR_NETWORK' 
           ? "Cannot connect to backend server. Make sure it's running on port 3000."
           : `Error: ${err.message}`);
@@ -58,7 +56,6 @@ export function UserTopAlbumsPage() {
         setAlbumsTwelveMonth(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error("Error fetching 12 month data:", err);
         if (!error) {
           setError(err.code === 'ERR_NETWORK' 
             ? "Cannot connect to backend server. Make sure it's running on port 3000."
@@ -72,19 +69,16 @@ export function UserTopAlbumsPage() {
   while (w < albumsTwelveMonth.length) {
     var v = 0;
     while (v < albumsSixMonth.length) {
-      console.log(albumsSixMonth[v].artist.name);
       if (
         albumsTwelveMonth[w].artist.name == albumsSixMonth[v].artist.name &&
         albumsTwelveMonth[w].name == albumsSixMonth[v].name
       ) {
-        console.log("same");
         same += 1;
       }
       v++;
     }
     w++;
   }
-  console.log(`${same} number of same albums`);
 
   return (
     <div className="p-6">
@@ -112,15 +106,21 @@ export function UserTopAlbumsPage() {
         )}
       </form>
       {/* <p>{albumsSixMonth[3].artist.name}</p> */}
-      {(Array.isArray(albumsSixMonth) ? albumsSixMonth : []).map((album) => (
-        <div key={album.id}>
-          {/* <img src={album.image[1]['#text']} /> */}
-          <h3>
-            {album.name} <img src={album.image[1]["#text"]} /> by{" "}
-            {album.artist.name} {album.playcount} plays
-          </h3>
-        </div>
-      ))}
+      {(Array.isArray(albumsSixMonth) ? albumsSixMonth : []).map((album) => {
+        const albumName = album.title ?? album.name;
+        const imageSrc = album.image_url ?? album.image?.[1]?.["#text"];
+        const playCount = album.play_count_total ?? album.playcount;
+        const artistName = album.artist?.name ?? album.artist?.["#text"];
+        return (
+          <div key={album.id}>
+            {imageSrc && <img src={imageSrc} alt="" />}
+            <h3>
+              {albumName} by {artistName}{" "}
+              {playCount != null && `${playCount} plays`}
+            </h3>
+          </div>
+        );
+      })}
     </div>
   );
 }
