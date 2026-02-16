@@ -9,7 +9,6 @@ import { EditedChartPage } from "./EditedChartPage";
 import { UserTopAlbumsPage } from "./UserTopAlbumsPage";
 import { HomePage } from "./HomePage";
 
-
 const router = createBrowserRouter([
   {
     element: (
@@ -26,25 +25,20 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
+        // gives a short list of the top tracks on all of last.fm
         path: "/toptracks",
         element: <TopTracksPage />,
       },
       {
-        path: "/artists",
-        element: <ArtistsPage />,
-      },
-      {
-        path: "/weeklychart",
-        element: <WeeklyChartPage />,
-      },
-      {
+        // works?
         path: "/usertopalbums",
         element: <UserTopAlbumsPage />,
       },
       {
+        // charty chart chart
         path: "/editedchart",
         element: <EditedChartPage />,
-      }
+      },
     ],
   },
 ]);
