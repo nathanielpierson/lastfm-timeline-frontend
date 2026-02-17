@@ -1,5 +1,24 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const LOADING_MESSAGES = [
+  "Judging your music taste…",
+  "Removing that one canceled artist…",
+  "Jamming out…",
+  "Outlasting FM…",
+  "Data brainstorming…",
+  "Wondering why you listen to this one…",
+  "Console.logging your bad choices…",
+  "Acknowledging a banger…",
+  "Enhancing search algorithm…",
+  "Gathering album artwork…",
+  "Sorting data…",
+  "Generating sorting metrics…",
+];
+
+function pickRandomMessage() {
+  return LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
+}
 
 export function EditedChartPage() {
   const [topEditedAlbums, setTopEditedAlbums] = useState([]);
@@ -7,7 +26,20 @@ export function EditedChartPage() {
   const [ascending, setAscending] = useState(false);
   const [sortField, setSortField] = useState("one_week"); // default sort field
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!loading) {
+      setLoadingMessage("");
+      return;
+    }
+    setLoadingMessage(pickRandomMessage());
+    const id = setInterval(() => {
+      setLoadingMessage(pickRandomMessage());
+    }, 3000);
+    return () => clearInterval(id);
+  }, [loading]);
 
   const sortAlbums = (albums, field, asc) => {
     return [...albums].toSorted((a, b) =>
@@ -104,6 +136,11 @@ export function EditedChartPage() {
           <div className="w-full max-w-md p-3 bg-red-100 border-2 border-red-400 text-red-700 rounded-lg">
             {error}
           </div>
+        )}
+        {loading && loadingMessage && (
+          <p className="text-gray-600 italic text-center w-full max-w-md">
+            {loadingMessage}
+          </p>
         )}
       </form>
 
