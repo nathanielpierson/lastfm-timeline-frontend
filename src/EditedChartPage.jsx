@@ -159,39 +159,39 @@ export function EditedChartPage() {
       </p>
 
       {sortedAlbums.map((album) => (
-        <div key={album.id} className="flex justify-start columns-1 border-2">
-          <h2 className="truncate w-48">{album.title}</h2>
-          {album.image_url && <img src={album.image_url} alt="" />}
-          <p className="artist">{album.artist.name}</p>
+        <div key={album.id} className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 border-2 p-4">
+          <h2 className="truncate w-48 shrink-0">{album.title}</h2>
+          {album.image_url && <img src={album.image_url} alt="" className="shrink-0" />}
+          <p className="artist shrink-0">{album.artist.name}</p>
           {album.one_week !== 0 ? (
-            <p className="filled">one week: {album.one_week}</p>
+            <p className="filled shrink-0">one week: {album.one_week}</p>
           ) : (
-            <p>one week: no data</p>
+            <p className="shrink-0">one week: no data</p>
           )}
           {album.one_month !== 0 ? (
-            <p className="filled">one month: {album.one_month}</p>
+            <p className="filled shrink-0">one month: {album.one_month}</p>
           ) : (
-            <p>one month: no data</p>
+            <p className="shrink-0">one month: no data</p>
           )}
           {album.three_month !== 0 ? (
-            <p className="filled">three month: {album.three_month}</p>
+            <p className="filled shrink-0">three month: {album.three_month}</p>
           ) : (
-            <p>three month: no data</p>
+            <p className="shrink-0">three month: no data</p>
           )}
           {album.six_month !== 0 ? (
-            <p className="filled">six month: {album.six_month}</p>
+            <p className="filled shrink-0">six month: {album.six_month}</p>
           ) : (
-            <p>six month: no data</p>
+            <p className="shrink-0">six month: no data</p>
           )}
           {album.twelve_month !== 0 ? (
-            <p className="filled">one year: {album.twelve_month}</p>
+            <p className="filled shrink-0">one year: {album.twelve_month}</p>
           ) : (
-            <p>one year: no data</p>
+            <p className="shrink-0">one year: no data</p>
           )}
           {album.play_count_total !== 0 ? (
-            <p className="filled">overall: {album.play_count_total}</p>
+            <p className="filled shrink-0">overall: {album.play_count_total}</p>
           ) : (
-            <p>overall: no data</p>
+            <p className="shrink-0">overall: no data</p>
           )}
         </div>
       ))}
