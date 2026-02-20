@@ -144,16 +144,76 @@ export function EditedChartPage() {
         )}
       </form>
 
-      <div className="flex gap-2 mb-4">
-        <button onClick={() => handleSort("one_week")}>1w</button>
-        <button onClick={() => handleSort("one_month")}>1m</button>
-        <button onClick={() => handleSort("three_month")}>3m</button>
-        <button onClick={() => handleSort("six_month")}>6m</button>
-        <button onClick={() => handleSort("twelve_month")}>1yr</button>
-        <button onClick={() => handleSort("play_count_total")}>all</button>
+      <div className="flex flex-wrap justify-center gap-2 mb-4">
+        <button
+          type="button"
+          onClick={() => handleSort("one_week")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "one_week"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          1w
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("one_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "one_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          1m
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("three_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "three_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          3m
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("six_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "six_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          6m
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("twelve_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "twelve_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          1yr
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("play_count_total")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "play_count_total"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          all
+        </button>
       </div>
 
-      <p>
+      <p className="text-center">
         Currently sorting by <b>{sortField}</b>{" "}
         ({ascending ? "ascending" : "descending"})
       </p>
