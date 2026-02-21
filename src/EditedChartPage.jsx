@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "./api";
 
 const LOADING_MESSAGES = [
   "Judging your music taste…",
@@ -49,7 +50,7 @@ export function EditedChartPage() {
 
   const fetchAndSortAlbums = () => {
     return axios
-      .get("http://localhost:3000/api/users/localalbumdata/raw")
+      .get(`${API_BASE_URL}/api/users/localalbumdata/raw`)
       .then((response) => {
         setTopEditedAlbums(response.data);
         setSortedAlbums(sortAlbums(response.data, sortField, ascending));
@@ -73,7 +74,7 @@ export function EditedChartPage() {
     setSortedAlbums([]);
 
     axios
-      .post("http://localhost:3000/api/users/localalbumdata", {
+      .post(`${API_BASE_URL}/api/users/localalbumdata`, {
         username,
       })
       .then(() => fetchAndSortAlbums())

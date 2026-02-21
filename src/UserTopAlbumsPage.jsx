@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { API_BASE_URL } from "./api";
 
 export function UserTopAlbumsPage() {
   const [albumsSixMonth, setAlbumsSixMonth] = useState([]);
@@ -24,7 +25,7 @@ export function UserTopAlbumsPage() {
     setAlbumsTwelveMonth([]);
     
     axios
-      .get("http://localhost:3000/api/users/localalbumdata", {
+      .get(`${API_BASE_URL}/api/users/localalbumdata`, {
         params: {
           user: query,
           period: "6month",
@@ -44,7 +45,7 @@ export function UserTopAlbumsPage() {
       });
       
     axios
-      .get("http://localhost:3000/api/users/localalbumdata", {
+      .get(`${API_BASE_URL}/api/users/localalbumdata`, {
         params: {
           user: query,
           period: "12month",

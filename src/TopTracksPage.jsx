@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_BASE_URL } from './api'
 
 export function TopTracksPage() {
   const [tracks, setTracks] = useState([]);
   const handleIndex = () => {
-    axios.get("http://localhost:3000/top-tracks", {
+    axios.get(`${API_BASE_URL}/top-tracks`, {
       params: {
         artist: "Bob Dylan"
       }
