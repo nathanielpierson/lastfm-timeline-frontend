@@ -29,6 +29,7 @@ export function EditedChartPage() {
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState(null);
+  const [chartUsername, setChartUsername] = useState(null);
 
   useEffect(() => {
     if (!loading) {
@@ -48,9 +49,10 @@ export function EditedChartPage() {
     );
   };
 
-  const fetchAndSortAlbums = () => {
+  const fetchAndSortAlbums = (username) => {
+    const params = username ? { username } : {};
     return axios
-      .get(`${API_BASE_URL}/api/users/localalbumdata/raw`)
+      .get(`${API_BASE_URL}/api/users/localalbumdata/raw`, { params })
       .then((response) => {
         setTopEditedAlbums(response.data);
         setSortedAlbums(sortAlbums(response.data, sortField, ascending));
@@ -77,7 +79,10 @@ export function EditedChartPage() {
       .post(`${API_BASE_URL}/api/users/localalbumdata`, {
         username,
       })
-      .then(() => fetchAndSortAlbums())
+      .then(() => {
+        setChartUsername(username);
+        return fetchAndSortAlbums(username);
+      })
       .catch((err) => {
         console.error("Error generating chart data:", err);
         setError(
