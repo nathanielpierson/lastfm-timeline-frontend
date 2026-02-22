@@ -108,10 +108,12 @@ export function UserTopAlbumsPage() {
       </form>
       {/* <p>{albumsSixMonth[3].artist.name}</p> */}
       {(Array.isArray(albumsSixMonth) ? albumsSixMonth : []).map((album) => {
-        const albumName = album.title ?? album.name;
+        const rawName = album.title ?? album.name ?? "";
+        const albumName = rawName.length > 20 ? `${rawName.slice(0, 20)}...` : rawName;
         const imageSrc = album.image_url ?? album.image?.[1]?.["#text"];
         const playCount = album.play_count_total ?? album.playcount;
-        const artistName = album.artist?.name ?? album.artist?.["#text"];
+        const rawArtist = album.artist?.name ?? album.artist?.["#text"] ?? "";
+        const artistName = rawArtist.length > 15 ? `${rawArtist.slice(0, 15)}...` : rawArtist;
         return (
           <div key={album.id}>
             {imageSrc && <img src={imageSrc} alt="" />}

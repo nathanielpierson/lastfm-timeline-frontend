@@ -226,9 +226,17 @@ export function EditedChartPage() {
 
       {sortedAlbums.map((album) => (
         <div key={album.id} className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 border-2 p-4">
-          <h2 className="truncate w-48 shrink-0">{album.title}</h2>
+          <h2 className="shrink-0">
+            {(album.title || "").length > 20
+              ? `${(album.title || "").slice(0, 20)}...`
+              : album.title || ""}
+          </h2>
           {album.image_url && <img src={album.image_url} alt="" className="shrink-0" />}
-          <p className="artist shrink-0">{album.artist.name}</p>
+          <p className="artist shrink-0">
+            {(album.artist?.name || "").length > 15
+              ? `${(album.artist.name || "").slice(0, 15)}...`
+              : album.artist?.name || ""}
+          </p>
           {album.one_week !== 0 ? (
             <p className="filled shrink-0">one week: {album.one_week}</p>
           ) : (
