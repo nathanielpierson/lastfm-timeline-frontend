@@ -21,34 +21,14 @@ function pickRandomMessage() {
   return LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
 }
 
-/** Axios error from our API: { error } or { status, message, data: { error } } */
-function getApiErrorMessage(err) {
-  if (err.code === "ERR_NETWORK") {
-    return "Cannot connect to backend server. Make sure it's running on port 3000.";
-  }
-  const d = err.response?.data;
-  if (!d) return err.message;
-  if (typeof d.error === "string") return d.error;
-  if (d.data?.error) return d.data.error;
-  if (d.message) return d.message;
-  return err.message;
-}
-
-function sortAlbums(albums, field, asc) {
-  return [...albums].toSorted((a, b) =>
-    asc ? a[field] - b[field] : b[field] - a[field]
-  );
-}
-
 export function EditedChartPage() {
   const [topEditedAlbums, setTopEditedAlbums] = useState([]);
   const [sortedAlbums, setSortedAlbums] = useState([]);
   const [ascending, setAscending] = useState(false);
-  const [sortField, setSortField] = useState("one_week");
+  const [sortField, setSortField] = useState("one_week"); // default sort field
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState(null);
-  const [infoMessage, setInfoMessage] = useState(null);
   const [chartUsername, setChartUsername] = useState(null);
 
   useEffect(() => {
@@ -63,29 +43,19 @@ export function EditedChartPage() {
     return () => clearInterval(id);
   }, [loading]);
 
-  useEffect(() => {
-    if (topEditedAlbums.length === 0) {
-      setSortedAlbums([]);
-      return;
-    }
-    setSortedAlbums(sortAlbums(topEditedAlbums, sortField, ascending));
-  }, [topEditedAlbums, sortField, ascending]);
+  const sortAlbums = (albums, field, asc) => {
+    return [...albums].toSorted((a, b) =>
+      asc ? a[field] - b[field] : b[field] - a[field]
+    );
+  };
 
   const fetchAndSortAlbums = (username) => {
     const params = username ? { username } : {};
     return axios
       .get(`${API_BASE_URL}/api/users/localalbumdata/raw`, { params })
       .then((response) => {
-        const rows = Array.isArray(response.data) ? response.data : [];
-        setTopEditedAlbums(rows);
-        if (rows.length === 0) {
-          setInfoMessage((prev) =>
-            prev ||
-            "No rows returned for this user. Try generating again or confirm the username has public scrobbles on Last.fm."
-          );
-        } else {
-          setInfoMessage(null);
-        }
+        setTopEditedAlbums(response.data);
+        setSortedAlbums(sortAlbums(response.data, sortField, ascending));
       });
   };
 
@@ -101,32 +71,25 @@ export function EditedChartPage() {
     }
 
     setError(null);
-    setInfoMessage(null);
     setLoading(true);
     setTopEditedAlbums([]);
     setSortedAlbums([]);
-    setChartUsername(null);
 
     axios
       .post(`${API_BASE_URL}/api/users/localalbumdata`, {
         username,
       })
-      .then((res) => {
-        const payload = res.data?.data ?? res.data;
-        const total = payload?.totalAlbums ?? 0;
-        const hint = payload?.hint;
-
+      .then(() => {
         setChartUsername(username);
-
-        if (total === 0 && hint) {
-          setInfoMessage(hint);
-        }
-
         return fetchAndSortAlbums(username);
       })
       .catch((err) => {
         console.error("Error generating chart data:", err);
-        setError(getApiErrorMessage(err));
+        setError(
+          err.code === "ERR_NETWORK"
+            ? "Cannot connect to backend server. Make sure it's running on port 3000."
+            : `Error: ${err.response?.data?.message || err.message}`
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -135,22 +98,23 @@ export function EditedChartPage() {
 
   const handleSort = (field) => {
     if (field === sortField) {
+      // same field → just toggle ascending
       setAscending((prev) => !prev);
+      setSortedAlbums((prev) => sortAlbums(prev, field, !ascending));
     } else {
+      // new field → reset to descending first
       setSortField(field);
       setAscending(false);
+      setSortedAlbums(sortAlbums(topEditedAlbums, field, false));
     }
   };
-
-  const hasChartData = sortedAlbums.length > 0;
 
   return (
     <div className="p-6">
       <div className="mb-6 text-center">
         <h1 className="text-2xl font-bold mb-2">Album Plays Over Time</h1>
         <p className="text-gray-700">
-          Search your Last.fm username to generate a chart of your album plays
-          over time.
+          Search your Last.fm username to generate a chart of your album plays over time.
         </p>
       </div>
 
@@ -179,11 +143,6 @@ export function EditedChartPage() {
             {error}
           </div>
         )}
-        {infoMessage && !error && (
-          <div className="w-full max-w-md p-3 bg-amber-50 border-2 border-amber-300 text-amber-900 rounded-lg">
-            {infoMessage}
-          </div>
-        )}
         {loading && loadingMessage && (
           <p className="text-gray-600 italic text-center w-full max-w-md">
             {loadingMessage}
@@ -191,103 +150,88 @@ export function EditedChartPage() {
         )}
       </form>
 
-      {chartUsername && hasChartData && (
-        <p className="text-center text-gray-600 mb-4">
-          Chart for <b>{chartUsername}</b>
-        </p>
-      )}
+      <div className="flex flex-wrap justify-center gap-2 mb-4">
+        <button
+          type="button"
+          onClick={() => handleSort("one_week")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "one_week"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          1w
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("one_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "one_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          1m
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("three_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "three_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          3m
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("six_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "six_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          6m
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("twelve_month")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "twelve_month"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          1yr
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSort("play_count_total")}
+          className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
+            sortField === "play_count_total"
+              ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
+          }`}
+        >
+          all
+        </button>
+      </div>
 
-      {hasChartData && (
-        <>
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
-            <button
-              type="button"
-              onClick={() => handleSort("one_week")}
-              className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
-                sortField === "one_week"
-                  ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
-                  : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
-              }`}
-            >
-              1w
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSort("one_month")}
-              className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
-                sortField === "one_month"
-                  ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
-                  : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
-              }`}
-            >
-              1m
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSort("three_month")}
-              className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
-                sortField === "three_month"
-                  ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
-                  : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
-              }`}
-            >
-              3m
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSort("six_month")}
-              className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
-                sortField === "six_month"
-                  ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
-                  : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
-              }`}
-            >
-              6m
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSort("twelve_month")}
-              className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
-                sortField === "twelve_month"
-                  ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
-                  : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
-              }`}
-            >
-              1yr
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSort("play_count_total")}
-              className={`px-4 py-2 rounded-full font-medium shadow-md transition-all duration-75 select-none border-2 min-w-[3rem] ${
-                sortField === "play_count_total"
-                  ? "bg-blue-600 text-white border-blue-700 shadow-inner active:scale-95 active:translate-y-0.5"
-                  : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 hover:border-gray-400 active:scale-95 active:translate-y-0.5 active:shadow-sm"
-              }`}
-            >
-              all
-            </button>
-          </div>
-
-          <p className="text-center mb-4">
-            Currently sorting by <b>{sortField}</b>{" "}
-            ({ascending ? "ascending" : "descending"})
-          </p>
-        </>
-      )}
+      <p className="text-center">
+        Currently sorting by <b>{sortField}</b>{" "}
+        ({ascending ? "ascending" : "descending"})
+      </p>
 
       {sortedAlbums.map((album) => (
-        <div
-          key={album.id}
-          className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 border-2 p-4"
-        >
+        <div key={album.id} className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2 border-2 p-4">
           <h2 className="shrink-0">
             {(album.title || "").length > 20
               ? `${(album.title || "").slice(0, 20)}...`
               : album.title || ""}
           </h2>
-          {album.image_url && (
-            <img src={album.image_url} alt="" className="shrink-0" />
-          )}
+          {album.image_url && <img src={album.image_url} alt="" className="shrink-0" />}
           <p className="artist shrink-0">
             {(album.artist?.name || "").length > 15
               ? `${(album.artist.name || "").slice(0, 15)}...`
